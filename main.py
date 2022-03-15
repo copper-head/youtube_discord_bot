@@ -72,4 +72,4 @@ async def roleadd(ctx, command, role):
 
 ### --- RUN BOT --- NEED TO DEAL WITH HIDING TOKEN HERE --- ###
 
-client.run('--- PUT TOKEN HERE ---')
+client.run('--- ACCESS TOKEN HERE ---')

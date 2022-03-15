@@ -38,11 +38,6 @@ class youtube_player(commands.Cog):
         :param url: -- Youtube URL
         :return:
         '''
-        
-        # Verify User has access to command
-        if not role_auth.authenticate(ctx.guild.id, ctx.author.roles, 'play'):
-            await ctx.send("You do not have access to this command.")
-            return
 
         if ctx.author.voice == None:
             await ctx.send("You must be in a voice channel to use that command.")
@@ -121,8 +116,17 @@ class youtube_player(commands.Cog):
 
     @commands.command()
     async def pause(self, ctx):
+        '''
+            Descrip: Pauses voice client in voice channel of the sending user.
+
+        '''
+
+        if ctx.author.voice == None:
+            await ctx.send("You must be in a voice channel to use that command.")
+            return
+
         await ctx.send("Paused")
-        
+
         channel = ctx.author.voice.channel
         
         if channel != None:
@@ -130,14 +134,22 @@ class youtube_player(commands.Cog):
             if voice.is_playing():
                 voice.pause()   
         else:
-            print('Not connected to a channel')
+            await ctx.send("You must be in a voice channel to use that command.")
             return
 
 
     @commands.command()
     async def resume(self, ctx):
-        await ctx.send("Playing")
-        
+        '''
+            Descrip: Resumes voice client in voice channel of the sending user.
+
+        '''
+
+        if ctx.author.voice == None:
+            await ctx.send("You must be in a voice channel to use that command.")
+            return
+
+        await ctx.send("Resuming")
         channel = ctx.author.voice.channel
         
         if channel != None:
@@ -145,27 +157,46 @@ class youtube_player(commands.Cog):
             if voice.is_paused():
                 voice.resume()   
         else:
-            print('Not connected to a channel')
+            await ctx.send("You must be in a voice channel to use that command.")
             return
             
     
     @commands.command()
     async def skip(self, ctx):
+
+        '''
+            Descrip: Skips current video being played and plays next video in queue if available.
+
+        '''
+
+        if ctx.author.voice == None:
+            await ctx.send("You must be in a voice channel to use that command.")
+            return
+
         await ctx.send("Skipping")
-        
         channel = ctx.author.voice.channel
         
         if channel != None:
             voice = get(self.client.voice_clients, guild=ctx.guild)
             voice.stop()
         else:
-            print('Not connected to a channel')
+            await ctx.send("You must be in a voice channel to use that command.")
             return
+
 
     @commands.command()
     async def stop(self, ctx):
-        await ctx.send("Stopping")
 
+        '''
+            Descrip: Stops playing and disconnects voice client - deletes video queue as well.
+
+        '''
+
+        if ctx.author.voice == None:
+            await ctx.send("You must be in a voice channel to use that command.")
+            return
+
+        await ctx.send("Stopping")
         channel = ctx.author.voice.channel
         channel_id = ctx.author.voice.channel.id
 
@@ -174,5 +205,19 @@ class youtube_player(commands.Cog):
             self.queues[channel_id].clear()
             voice.stop()
         else:
-            print('Not connected to a channel')
+            await ctx.send("You must be in a voice channel to use that command.")
             return
+
+
+    @commands.command()
+    async def queue(self, ctx):
+
+        channel_id = ctx.author.voice.channel.id
+
+        i = 1
+        for url in self.queues[channel_id]:
+            yt = YouTube(url)
+            row = "{}. ".format(i) + yt.title
+            await ctx.send(row)
+            i += 1
+
