@@ -15,6 +15,8 @@ import youtube_commands as yt
 import os
 import asyncio
 from pytube import YouTube
+import aioconsole
+import console_app
 
 import role_authenticator
 
@@ -68,8 +70,18 @@ async def roleadd(ctx, command, role):
         await ctx.send("You do not have access to this command.")
 
 
+async def get_console_input():
+    await client.wait_until_ready()
+    while True:
+        await aioconsole.ainput("Enter SOmething:")
+        print("aight")
 
+
+c_app = console_app.ConsoleApp(client)
 
 ### --- RUN BOT --- NEED TO DEAL WITH HIDING TOKEN HERE --- ###
+#async def run_bot():
+client.loop.create_task(c_app.run())
+client.run('--- TOKEN HERE ---')
 
-client.run('--- ACCESS TOKEN HERE ---')
+#asyncio.run(run_bot())
