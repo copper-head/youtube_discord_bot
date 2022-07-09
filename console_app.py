@@ -16,15 +16,15 @@ class ConsoleApp:
     async def run(self):
 
         await self.client.wait_until_ready()
-    
+
         self.bot_running = True
 
         # Main loop
         while self.bot_running:
 
-            console_input = await aioconsole.ainput("/::")   # Get Console Input
+            console_input = await aioconsole.ainput("yt_bot>>>")   # Get Console Input
             await self.parse_command(console_input)          # Pass input into parse_command() to be handled
-    
+
 
     async def parse_command(self, command: string):
 
@@ -39,7 +39,7 @@ class ConsoleApp:
             await self.voice_client_count()
         if command == "clearcache":
             await self.clear_yt_cache()
-        
+
 
     # Gracefully shuts down the bot.
     async def stop_bot(self):
@@ -47,16 +47,16 @@ class ConsoleApp:
         # Disconnect voice clients
         for vc in self.client.voice_clients:
             await vc.disconnect()
-        
+
         await self.client.close()
 
 
     # Print number of active voice clients
     async def voice_client_count(self):
-        
+
         string_message = "Active Voice Clients Count: " + str(len(self.client.voice_clients))
         await aioconsole.aprint(string_message)
-    
+
     # Clears youtube cache (yt_source folder)
     async def clear_yt_cache(self):
 
@@ -74,7 +74,6 @@ class ConsoleApp:
             except PermissionError:
                 bytes_del_count -= os.path.getsize(f_path)
                 file_del_count -= 1
-        
+
         string_message = "{} files deleted. Freed {} bytes.".format(file_del_count, bytes_del_count)
         await aioconsole.aprint(string_message)
-
